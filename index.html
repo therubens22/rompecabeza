@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Drag y Drop (2)</title>
+
+</head>
+
+<body>
+    <div class="container">
+        <div id="Rompecabezas"></div>
+        <div id="piezas"></div>
+    </div>
+    <h1 id="mensaje">¡Ganaste!</h1>
+
+
+    <script>
+        const imagenes = [
+            'imagen-0', 'imagen-1', 'imagen-2',
+            'imagen-3', 'imagen-4', 'imagen-5',
+            'imagen-6', 'imagen-7', 'imagen-8'
+        ];
+
+        const Rompecabezas = document.getElementById('Rompecabezas');
+        const piezas = document.getElementById('piezas');
+        const mensaje = document.getElementById('mensaje');
+
+
+        let terminado = imagenes.length;
+
+        while (imagenes.length) {
+            const indice = Math.floor(Math.random() * imagenes.length);
+            const div = document.createElement("div");
+            div.className = "pieza";
+            div.id = imagenes[indice];
+            div.draggable = true;
+            div.style.backgroundImage = `url("img/${imagenes[indice]}.jpg")`;
+            piezas.appendChild(div);
+
+            console.log(indice);
+            imagenes.splice(indice, 1);
+        }
+
+        for (let i = 0; i < terminado; i++) {
+            const div = document.createElement("div");
+            div.classList = "placeholder";
+            div.dataset.id = i;
+
+            Rompecabezas.appendChild(div)
+        }
+        
+
+        piezas.addEventListener("dragstart", e => {
+            e.dataTransfer.setData("id", e.target.id)
+        })
+
+        Rompecabezas.addEventListener("dragover", e => {
+            e.preventDefault();
+            e.target.classList.add("hover");
+
+        });
+
+        Rompecabezas.addEventListener("dragleave", e => {
+
+            e.target.classList.remove("hover");
+        });
+
+        Rompecabezas.addEventListener("drop", e => {
+
+            e.target.classList.remove("hover");
+
+            const id = e.dataTransfer.getData("id");
+            const numero = id.split(`-`)[1];
+
+
+            e.target.dataset.id;
+
+            if (e.target.dataset.id === numero) {
+                e.target.appendChild(document.getElementById(id));
+
+                terminado--;
+
+                if (terminado === 0) {
+                    document.body.classList.add("ganaste")
+                }
+            }
+        });
+
+    </script>
+</body>
+
+</html>
